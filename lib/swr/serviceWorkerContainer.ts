@@ -1,8 +1,8 @@
-import { App } from "./app";
+import { App, Server } from "./app";
 import { EventType } from "./swEvent";
 import { MessageToMain, MessageToSW } from "../type";
 export class serviceWorkerContainer {
-  constructor(public workerApp: App) {}
+  constructor(public workerApp: Server) {}
 
   scriptURL = "/sw.js";
 
@@ -55,7 +55,9 @@ export class serviceWorkerContainer {
 
   async unregister() {
     const r = await this.getRegistration();
-    r?.unregister();
+    r?.unregister().then((v) => {
+      console.log("unregister", v);
+    });
   }
 
   private postMessage(msg: any) {

@@ -1,5 +1,5 @@
 {
-  "name": "worker-server",
+  "name": "worker-webserver",
   "version": "0.0.1",
   "description": "web server in browser service worker",
   "main": "./dist/index.js",

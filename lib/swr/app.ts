@@ -1,6 +1,7 @@
 import { MessageToMain } from "../type";
 import { IMiddleware, MiddlewareRunner } from "./middleware";
-import { Route, Router, RouterContext } from "./router";
+import { Route, RouterContext, Router } from "./router";
+import { serviceWorkerContainer } from "./serviceWorkerContainer";
 
 type Ctx = {
   req: Request;
@@ -9,7 +10,7 @@ type Ctx = {
   _handle?: Route["handler"];
 };
 
-export class App {
+export class Server {
   runer = new MiddlewareRunner<Ctx>();
 
   router = new Router();
@@ -26,35 +27,39 @@ export class App {
     });
   }
 
-  buildRouter(apiRoutes: Route[], customRoutes: Route[]) {
-    const routes = [...apiRoutes];
+  // buildRouter(apiRoutes: Route[], customRoutes: Route[]) {
+  //   const routes = [...apiRoutes];
 
-    const repeatRoute: { method: string; path: string }[] = [];
+  //   const repeatRoute: { method: string; path: string }[] = [];
 
-    routes.forEach((v) => {
-      const customRoute = customRoutes.find(
-        (w) =>
-          v.method.toUpperCase() === w.method.toUpperCase() && v.path === w.path
-      );
-      if (customRoute) {
-        repeatRoute.push({
-          method: v.method,
-          path: v.path,
-        });
+  //   routes.forEach((v) => {
+  //     const customRoute = customRoutes.find(
+  //       (w) =>
+  //         v.method.toUpperCase() === w.method.toUpperCase() && v.path === w.path
+  //     );
+  //     if (customRoute) {
+  //       repeatRoute.push({
+  //         method: v.method,
+  //         path: v.path,
+  //       });
 
-        v.handler = customRoute.handler;
-      }
-    });
+  //       v.handler = customRoute.handler;
+  //     }
+  //   });
 
-    const restRoute = customRoutes.filter((v) =>
-      repeatRoute.every(
-        (w) =>
-          v.method.toUpperCase() !== w.method.toUpperCase() || v.path !== w.path
-      )
-    );
+  //   const restRoute = customRoutes.filter((v) =>
+  //     repeatRoute.every(
+  //       (w) =>
+  //         v.method.toUpperCase() !== w.method.toUpperCase() || v.path !== w.path
+  //     )
+  //   );
 
-    routes.push(...restRoute);
+  //   routes.push(...restRoute);
 
+  //   this.router.addRoutes(routes);
+  // }
+
+  addRoutes(routes: Route[]) {
     this.router.addRoutes(routes);
   }
 
@@ -83,5 +88,27 @@ export class App {
     await this.run(ctx);
 
     return ctx.body;
+  }
+}
+
+export class App {
+  private server = new Server();
+  private sw = new serviceWorkerContainer(this.server);
+
+  async start() {
+    await this.sw.start();
+  }
+
+  async stop() {
+    await this.sw.notifySwClose();
+    await this.sw.unregister();
+  }
+
+  addRoutes(routes: Route[]) {
+    this.server.addRoutes(routes);
+  }
+
+  use(middleware: IMiddleware<Ctx>) {
+    this.server.use(middleware);
   }
 }
