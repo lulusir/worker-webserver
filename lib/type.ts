@@ -8,7 +8,12 @@ export interface MessageToMain {
 export interface MessageToSW {
   pid: number;
   data: {
-    status: "ok" | "noMatch";
+    status: MessageStatus;
     body: any;
   };
+}
+
+export enum MessageStatus {
+  ok,
+  noMatch,
 }

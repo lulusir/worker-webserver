@@ -1,7 +1,7 @@
 import { MessageToMain } from "../type";
 import { IMiddleware, MiddlewareRunner } from "./middleware";
 import { Route, RouterContext, Router } from "./router";
-import { serviceWorkerContainer } from "./serviceWorkerContainer";
+import { serviceWorkerContainer } from "../swr/serviceWorkerContainer";
 
 type Ctx = {
   req: Request;
@@ -71,7 +71,7 @@ export class Server {
     this.runer.run(context);
   }
 
-  async msgConsumer(data: MessageToMain["data"]) {
+  msgConsumer = async (data: MessageToMain["data"]) => {
     const { req } = data;
     const url = new URL(req.url);
     const { handler, params } = this.router.match(url.pathname, req.method);
@@ -88,20 +88,20 @@ export class Server {
     await this.run(ctx);
 
     return ctx.body;
-  }
+  };
 }
 
 export class App {
   private server = new Server();
-  private sw = new serviceWorkerContainer(this.server);
+  private sw = new serviceWorkerContainer();
 
   async start() {
+    this.sw.setMessageConsumer(this.server.msgConsumer);
     await this.sw.start();
   }
 
   async stop() {
-    await this.sw.notifySwClose();
-    await this.sw.unregister();
+    await this.sw.stop;
   }
 
   addRoutes(routes: Route[]) {

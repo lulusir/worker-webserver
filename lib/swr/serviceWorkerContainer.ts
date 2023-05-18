@@ -1,9 +1,6 @@
-import { App, Server } from "./app";
+import { MessageStatus, MessageToMain, MessageToSW } from "../type";
 import { EventType } from "./swEvent";
-import { MessageToMain, MessageToSW } from "../type";
 export class serviceWorkerContainer {
-  constructor(public workerApp: Server) {}
-
   scriptURL = "/sw.js";
 
   async start() {
@@ -11,6 +8,11 @@ export class serviceWorkerContainer {
     await this.notifySwReady();
     this.handlePipeMsg();
     this.handlePageReload();
+  }
+
+  async stop() {
+    await this.notifySwClose();
+    await this.unregister();
   }
 
   async install() {
@@ -66,20 +68,26 @@ export class serviceWorkerContainer {
     });
   }
 
+  private msgConsumer: ((data: { req: Request }) => Promise<any>) | null = null;
+
+  setMessageConsumer(msgConsumer: (data: { req: Request }) => Promise<any>) {
+    this.msgConsumer = msgConsumer;
+  }
+
   handlePipeMsg() {
     navigator.serviceWorker.addEventListener("message", async (ev) => {
       const v: null | MessageToMain = ev.data;
-      if (v?.pid) {
+      if (v?.pid && this.msgConsumer) {
         const { pid, data } = v;
         const request = this.buildRequest(data.req);
 
-        const body = await this.workerApp.msgConsumer({ req: request });
+        const body = await this.msgConsumer({ req: request });
 
         if (body) {
           const res: MessageToSW = {
             pid,
             data: {
-              status: "ok",
+              status: MessageStatus.ok,
               body: body,
             },
           };
@@ -88,7 +96,7 @@ export class serviceWorkerContainer {
           const res: MessageToSW = {
             pid,
             data: {
-              status: "noMatch",
+              status: MessageStatus.noMatch,
               body: null,
             },
           };
@@ -99,10 +107,8 @@ export class serviceWorkerContainer {
   }
 
   buildRequest(data: any) {
-    // 获取传递的消息
     const request = data;
 
-    // 将请求转换为 Request 对象
     const serializedRequest = request;
     const headers = new Headers(serializedRequest.headers);
     const newRequest = new Request(serializedRequest.url, {

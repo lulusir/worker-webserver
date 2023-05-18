@@ -16,6 +16,13 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src", "lib/sw", "lib/swr", "lib/type.ts"],
+  "include": [
+    "src",
+    "lib/sw",
+    "lib/swr",
+    "lib/type.ts",
+    "lib/webServer/app.ts",
+    "lib/index.ts"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

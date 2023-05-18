@@ -1,3 +1,4 @@
+import { MessageStatus, MessageToSW } from "../type";
 import { PipeMessage } from "./pipeMessage";
 
 export class ResponseBuilder {
@@ -28,8 +29,8 @@ export class ResponseBuilder {
       console.warn("client not found", event);
     }
 
-    return this.pipeMessage.receive(pid).then((msg) => {
-      if (msg.status === "ok") {
+    return this.pipeMessage.receive(pid).then((msg: MessageToSW["data"]) => {
+      if (msg.status === MessageStatus.ok) {
         const response = new Response(msg.body);
         return response;
       }
