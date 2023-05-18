@@ -24,6 +24,13 @@
     "dev": "vite",
     "build": "tsup"
   },
+  "authors": [
+    "lujavascript@gmail.com"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lulusir/worker-webserver.git"
+  },
   "devDependencies": {
     "@anatine/zod-mock": "^3.11.0",
     "@lujs/middleware": "^0.0.5",

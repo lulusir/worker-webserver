@@ -1,3 +1,5 @@
+[中文文档](https://github.com/lulusir/worker-webserver/blob/main/README.zh.md)
+
 # worker-webserver
 
 Worker-webserver is a lightweight NPM package that allows you to implement a web server in your service worker using the fetch event. It allows you to intercept incoming requests, match them with a user-defined router, and execute a series of middleware functions to handle them.
