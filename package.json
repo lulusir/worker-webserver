@@ -1,16 +1,14 @@
 {
   "name": "worker-webserver",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "web server in browser service worker",
-  "main": "./dist/index.js",
+  "main": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "license": "MIT",
   "exports": {
     ".": {
-      "default": "./dist/index.js"
-    },
-    "./public": {
-      "default": "./public/sw.js"
+      "default": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
     },
     "./package.json": "./package.json"
   },

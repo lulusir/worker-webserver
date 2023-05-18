@@ -9,7 +9,7 @@ npm install worker-webserver --save
 
 ## 使用
 
-使用cli命令导出sw.js, 放置在你的静态资源目录，如果你使用vite/umi则是对应的public文件夹
+使用cli命令导出sw.js, 放置在你的静态资源目录，如果你使用vite或者umi，则是对应的public文件夹
 
 ```bash
 npx worker-webserver --out public

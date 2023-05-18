@@ -12,7 +12,11 @@ npm install worker-webserver --save
 ```
 
 ## Usage
+Export sw.js using the CLI command and place it in your static resource directory. If you are using Vite or Umi, it corresponds to the public folder
 
+```bash
+npx worker-webserver --out public
+```
 First, import the necessary functions and interfaces:
 ```typescript
 import { App, Route } from 'worker-webserver'
