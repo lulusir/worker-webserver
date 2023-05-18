@@ -15,7 +15,7 @@ npm install worker-webserver --save
 
 First, import the necessary functions and interfaces:
 ```typescript
-import { start, Route } from 'worker-webserver'
+import { App, Route } from 'worker-webserver'
 ```
 
 Then, create an array of custom routes to match incoming requests:
@@ -38,7 +38,7 @@ const customRoutes: Route[] = [
 
 You can define your own middleware functions to handle incoming requests and responses. For example:
 ```typescript
-iconst app = start();
+iconst app = new App();
 
 app.addRoutes(customRoutes);
 

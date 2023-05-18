@@ -9,9 +9,16 @@ npm install worker-webserver --save
 
 ## 使用
 
+使用cli命令导出sw.js, 放置在你的静态资源目录，如果你使用vite/umi则是对应的public文件夹
+
+```bash
+npx worker-webserver --out public
+```
+
+
 首先，导入所需的函数和接口：
 ```typescript
-import { start, Route } from 'worker-webserver'
+import { App, Route } from 'worker-webserver'
 ```
 
 然后，创建一个自定义路由的数组来匹配进来的请求：
@@ -34,7 +41,7 @@ const customRoutes: Route[] = [
 
 你可以定义自己的中间件函数来处理进来的请求和响应。例如：
 ```typescript
-iconst app = start();
+iconst app = new App();
 
 app.addRoutes(customRoutes);
 
