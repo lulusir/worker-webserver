@@ -101,7 +101,7 @@ export class App {
   }
 
   async stop() {
-    await this.sw.stop;
+    await this.sw.stop();
   }
 
   addRoutes(routes: Route[]) {

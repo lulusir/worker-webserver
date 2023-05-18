@@ -16,7 +16,7 @@ export default defineConfig([
     },
   },
   {
-    entry: ["lib/swr/index.ts"],
+    entry: ["lib/index.ts"],
     outDir: "./dist",
     clean: true,
     format: ["esm"],
