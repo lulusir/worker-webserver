@@ -2,12 +2,13 @@
   "name": "worker-webserver",
   "version": "0.0.5",
   "description": "web server in browser service worker",
-  "main": "./dist/index.mjs",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "license": "MIT",
   "exports": {
     ".": {
-      "default": "./dist/index.mjs",
+      "default": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
     "./package.json": "./package.json"
@@ -22,6 +23,7 @@
     "README.md"
   ],
   "scripts": {
+    "prepublishOnly": "npm run build && np --no-cleanup --yolo --no-publish --any-branch",
     "dev": "vite",
     "build": "tsup"
   },

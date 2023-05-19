@@ -68,7 +68,7 @@ export class Server {
   }
 
   run(context: Ctx) {
-    this.runer.run(context);
+    return this.runer.run(context);
   }
 
   msgConsumer = async (data: MessageToMain["data"]) => {

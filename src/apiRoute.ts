@@ -45,6 +45,7 @@ const handler: Route["handler"] = async (params) => {
     }),
   });
   const mockData = generateMock(s);
+
   // todo 判断接口为json的时候要转
   return JSON.stringify(mockData);
 };
