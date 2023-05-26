@@ -58,9 +58,7 @@ export class serviceWorkerContainer {
 
   async unregister() {
     const r = await this.getRegistration();
-    r?.unregister().then((v) => {
-      console.log("unregister", v);
-    });
+    await r?.unregister();
   }
 
   private postMessage(msg: any) {

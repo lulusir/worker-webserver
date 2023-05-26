@@ -72,8 +72,6 @@ function bufferToString(buffer: ArrayBuffer): string {
 
 export function deserializeResponse(serialized: SerializedResponse): Response {
   const headers = new Headers(serialized.headers);
-  console.log(headers, "headers");
-  console.log(headers.get("content-type"), ' headers.get("content-type")');
 
   const responseInit: ResponseInit = {
     status: serialized.status,
