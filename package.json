@@ -1,6 +1,6 @@
 {
   "name": "worker-webserver",
-  "version": "0.0.7",
+  "version": "0.1.0",
   "description": "web server in browser service worker",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
