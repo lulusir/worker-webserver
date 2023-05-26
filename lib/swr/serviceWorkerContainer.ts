@@ -1,4 +1,5 @@
 import { MessageStatus, MessageToMain, MessageToSW } from "../type";
+import { serializeResponse } from "./response";
 import { EventType } from "./swEvent";
 export class serviceWorkerContainer {
   scriptURL = "/sw.js";
@@ -68,9 +69,12 @@ export class serviceWorkerContainer {
     });
   }
 
-  private msgConsumer: ((data: { req: Request }) => Promise<any>) | null = null;
+  private msgConsumer: ((data: { req: Request }) => Promise<Response>) | null =
+    null;
 
-  setMessageConsumer(msgConsumer: (data: { req: Request }) => Promise<any>) {
+  setMessageConsumer(
+    msgConsumer: (data: { req: Request }) => Promise<Response>
+  ) {
     this.msgConsumer = msgConsumer;
   }
 
@@ -81,14 +85,13 @@ export class serviceWorkerContainer {
         const { pid, data } = v;
         const request = this.buildRequest(data.req);
 
-        const body = await this.msgConsumer({ req: request });
+        const response = await this.msgConsumer({ req: request });
 
-        if (body) {
+        if (response) {
           const res: MessageToSW = {
             pid,
             data: {
-              status: MessageStatus.ok,
-              body: body,
+              res: await serializeResponse(response),
             },
           };
           this.postMessage(res);
@@ -96,8 +99,7 @@ export class serviceWorkerContainer {
           const res: MessageToSW = {
             pid,
             data: {
-              status: MessageStatus.noMatch,
-              body: null,
+              res: await serializeResponse(new Response(null, { status: 500 })),
             },
           };
           this.postMessage(res);

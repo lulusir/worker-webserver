@@ -27,30 +27,41 @@ import { App, Route } from 'worker-webserver'
 const customRoutes: Route[] = [
   {
     path: "/users/:id",
-    handler: async (params) => {
-      return JSON.stringify({
-        test: "testhh",
-        ...params,
-      });
-    },
     method: "POST",
+    handler: async (params) => {
+      ctx.res.body = JSON.stringify({
+        test: "test",
+        ...ctx.params,
+      });
+      ctx.res.headers.set("content-type", "application/json");
+    },
   },
 ];
 
 ```
 
-你可以定义自己的中间件函数来处理进来的请求和响应。例如：
+你可以定义自己的中间件函数来处理进来的请求和响应。例如：下面的代码把所有code都统一成200
 ```typescript
 iconst app = new App();
 
 app.addRoutes(customRoutes);
 
-app.use((ctx, next) => {
-  console.log(ctx.req, "===========log");
-  if (ctx.req.method === "POST") {
-    ctx.body = "mybody";
+app.use(async (ctx, next) => {
+  await next();
+
+  // unified code to 200
+  if (ctx.res.body) {
+    const contentType = ctx.res.headers.get("content-type");
+    if (contentType === "application/json") {
+      try {
+        let body = JSON.parse(ctx.res.body);
+        if (body.code) {
+          body.code = 200;
+        }
+        ctx.res.body = JSON.stringify(body);
+      } catch {}
+    }
   }
-  next();
 });
 
 ```

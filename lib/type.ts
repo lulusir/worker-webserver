@@ -1,3 +1,5 @@
+import { SerializedResponse } from "./swr/response";
+
 export interface MessageToMain {
   pid: number;
   data: {
@@ -8,12 +10,11 @@ export interface MessageToMain {
 export interface MessageToSW {
   pid: number;
   data: {
-    status: MessageStatus;
-    body: any;
+    res: SerializedResponse;
   };
-}
-
-export enum MessageStatus {
-  ok,
-  noMatch,
+  // data: {
+  //   status: MessageStatus;
+  //   body: any;
+  //   headers?: HeadersInit;
+  // };
 }

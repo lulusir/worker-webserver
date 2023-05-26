@@ -1,14 +1,9 @@
-import { MessageToMain } from "../type";
-import { IMiddleware, MiddlewareRunner } from "./middleware";
-import { Route, RouterContext, Router } from "./router";
 import { serviceWorkerContainer } from "../swr/serviceWorkerContainer";
-
-type Ctx = {
-  req: Request;
-  body: any;
-  _routerCtx?: RouterContext;
-  _handle?: Route["handler"];
-};
+import { MessageToMain } from "../type";
+import { Ctx } from "./context";
+import { IMiddleware, MiddlewareRunner } from "./middleware";
+import { Res } from "./res";
+import { Route, Router } from "./router";
 
 export class Server {
   runer = new MiddlewareRunner<Ctx>();
@@ -17,10 +12,9 @@ export class Server {
 
   constructor() {
     this.use(async (ctx, next) => {
-      if (ctx._handle) {
-        if (ctx._routerCtx) {
-          const body = await ctx._handle(ctx._routerCtx);
-          ctx.body = body;
+      if (ctx.__handle) {
+        if (ctx.__routerCtx) {
+          await ctx.__handle(ctx.__routerCtx);
         }
       }
       await next();
@@ -76,18 +70,22 @@ export class Server {
     const url = new URL(req.url);
     const { handler, params } = this.router.match(url.pathname, req.method);
 
+    const r = new Res();
+
     const ctx = {
       req: req,
-      body: null,
-      _handle: handler,
-      _routerCtx: {
+      res: r,
+      __handle: handler,
+      __routerCtx: {
         params: params,
         req: req,
+        res: r,
       },
     };
+
     await this.run(ctx);
 
-    return ctx.body;
+    return r._toRes();
   };
 }
 

@@ -1,3 +1,4 @@
+import { deserializeResponse } from "../swr/response";
 import { MessageStatus, MessageToSW } from "../type";
 import { PipeMessage } from "./pipeMessage";
 
@@ -30,8 +31,8 @@ export class ResponseBuilder {
     }
 
     return this.pipeMessage.receive(pid).then((msg: MessageToSW["data"]) => {
-      if (msg.status === MessageStatus.ok) {
-        const response = new Response(msg.body);
+      if (msg.res.status === 200) {
+        const response = deserializeResponse(msg.res);
         return response;
       }
       return fetch(event.request);

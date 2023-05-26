@@ -3,7 +3,7 @@ import { z } from "zod";
 import { Route } from "../dist";
 import { generateMock } from "@anatine/zod-mock";
 
-const handler: Route["handler"] = async (params) => {
+const handler: Route["handler"] = async (ctx) => {
   const s = z.object({
     code: z.number(),
     message: z.string(),
@@ -46,8 +46,8 @@ const handler: Route["handler"] = async (params) => {
   });
   const mockData = generateMock(s);
 
-  // todo 判断接口为json的时候要转
-  return JSON.stringify(mockData);
+  ctx.res.body = JSON.stringify(mockData);
+  ctx.res.headers.set("content-type", "application/json");
 };
 
 export const apiRoutes: Route[] = [

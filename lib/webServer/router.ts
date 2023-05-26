@@ -1,9 +1,11 @@
-type Params = Record<string, string>;
+import { Res } from "./res";
+
+export type Params = Record<string, string>;
 
 export type RouterContext = {
   params: Params;
   req: Request;
-  res?: Response;
+  res: Res;
 };
 
 enum Priority {
@@ -26,7 +28,7 @@ class TrieNode {
 export interface Route {
   method: Request["method"]; // UpperCase
   path: string;
-  handler: ((ctx: RouterContext) => Promise<any>) | null;
+  handler: ((context: RouterContext) => any | Promise<any>) | null;
 }
 
 export class Router {

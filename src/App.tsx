@@ -4,27 +4,30 @@ import { apiRoutes } from "./apiRoute";
 import { customRoutes } from "./customRoute";
 
 const app = new App();
+
 app.addRoutes(apiRoutes);
 app.addRoutes(customRoutes);
+
 app.use(async (ctx, next) => {
   await next();
   if (ctx.req.method === "POST") {
-    ctx.body = "mybody";
+    ctx.res.body = "mybody";
   }
   // 统一code
-  if (ctx.body) {
-    try {
-      let body = JSON.parse(ctx.body);
-      if (body.code) {
-        body.code = 200;
-      }
-      ctx.body = JSON.stringify(body);
-    } catch {}
-  }
-  console.log(ctx.body, "==ctxbo");
-});
 
-console.log(app);
+  if (ctx.res.body) {
+    const contentType = ctx.res.headers.get("content-type");
+    if (contentType === "application/json") {
+      try {
+        let body = JSON.parse(ctx.res.body);
+        if (body.code) {
+          body.code = 200;
+        }
+        ctx.res.body = JSON.stringify(body);
+      } catch {}
+    }
+  }
+});
 
 function AppC() {
   return (
@@ -48,7 +51,14 @@ function AppC() {
           onClick={() => {
             const start = Date.now();
             fetch("http://localhost:8080/users/12")
-              .then((res) => res.json())
+              .then((res) => {
+                console.log(
+                  res.headers,
+                  res.headers.get("content-type"),
+                  "========res"
+                );
+                return res.json();
+              })
               .then((res) => {
                 console.log(res, "===res");
                 console.log(Date.now() - start);

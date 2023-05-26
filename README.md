@@ -28,13 +28,14 @@ Then, create an array of custom routes to match incoming requests:
 const customRoutes: Route[] = [
   {
     path: "/users/:id",
-    handler: async (params) => {
-      return JSON.stringify({
-        test: "testhh",
-        ...params,
-      });
-    },
     method: "POST",
+    handler: async (ctx) => {
+      ctx.res.body = JSON.stringify({
+        test: "test",
+        ...ctx.params,
+      });
+      ctx.res.headers.set("content-type", "application/json");
+    },
   },
 ];
 
@@ -42,16 +43,27 @@ const customRoutes: Route[] = [
 
 You can define your own middleware functions to handle incoming requests and responses. For example:
 ```typescript
-iconst app = new App();
+const app = new App();
 
 app.addRoutes(customRoutes);
 
-app.use((ctx, next) => {
-  console.log(ctx.req, "===========log");
-  if (ctx.req.method === "POST") {
-    ctx.body = "mybody";
+
+app.use(async (ctx, next) => {
+  await next();
+
+  // unified code to 200
+  if (ctx.res.body) {
+    const contentType = ctx.res.headers.get("content-type");
+    if (contentType === "application/json") {
+      try {
+        let body = JSON.parse(ctx.res.body);
+        if (body.code) {
+          body.code = 200;
+        }
+        ctx.res.body = JSON.stringify(body);
+      } catch {}
+    }
   }
-  next();
 });
 
 ```
