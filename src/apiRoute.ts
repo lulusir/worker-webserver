@@ -4,6 +4,7 @@ import { Route } from "../dist";
 import { generateMock } from "@anatine/zod-mock";
 
 const handler: Route["handler"] = async (ctx) => {
+  console.log(ctx);
   const s = z.object({
     code: z.number(),
     message: z.string(),
@@ -53,6 +54,7 @@ const handler: Route["handler"] = async (ctx) => {
 export const apiRoutes: Route[] = [
   { path: "/users", handler: handler, method: "GET" },
   { path: "/users/:id", handler: handler, method: "get" },
+  { path: "/test/{packCode}/{abc}", handler: handler, method: "get" },
   { path: "/users/:id", handler: handler, method: "POST" },
   { path: "/posts/:id/comments/:commentId", handler: handler, method: "GET" },
 ];

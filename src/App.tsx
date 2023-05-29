@@ -69,6 +69,19 @@ function AppC() {
         </button>
         <button
           onClick={() => {
+            fetch("http://localhost:8080/test/12/rep", {
+              method: "get",
+            })
+              .then((res) => res.json())
+              .then((res) => {
+                debugger;
+              });
+          }}
+        >
+          params usrr
+        </button>
+        <button
+          onClick={() => {
             fetch("http://localhost:8080/users/12", {
               method: "post",
             })

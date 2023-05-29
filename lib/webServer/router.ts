@@ -44,19 +44,36 @@ export class Router {
     this._insert(route);
   }
 
+  private isPrams(segment: string) {
+    const paramsReg = /\{([^}]+)\}/g;
+    return segment.startsWith(":") || paramsReg.test(segment);
+  }
+
+  private paramName(segment: string) {
+    const paramsReg = /\{([^}]+)\}/g;
+    if (segment.startsWith(":")) {
+      return segment.slice(1);
+    }
+    if (paramsReg.test(segment)) {
+      return segment.slice(1, -1) || "";
+    }
+    return "";
+  }
+
   private _insert(route: Route) {
     const method = route.method.toUpperCase();
     const segments = [method, ...route.path.split("/")];
     let node = this.root;
     for (const segment of segments) {
       if (segment === "") continue;
-      const isParam = segment.startsWith(":");
+
+      const isParam = this.isPrams(segment);
       const isOptionl = isParam && segment.endsWith("?");
       const key = isParam ? "*" : segment;
       if (!node.children.has(key)) {
         const n = new TrieNode();
         n.isParam = isParam;
-        n.paramName = isParam ? segment.slice(1) : ""; // /:id -> id
+        n.paramName = isParam ? this.paramName(segment) : ""; // /:id -> id
         n.isOptionl = isOptionl;
         if (isParam) {
           n.priority = Priority.param;
