@@ -16,6 +16,8 @@ export class Server {
         if (ctx.__routerCtx) {
           await ctx.__handle(ctx.__routerCtx);
         }
+      } else {
+        ctx.res.status = 500;
       }
       await next();
     });
