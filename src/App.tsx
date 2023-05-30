@@ -82,22 +82,7 @@ function AppC() {
         >
           params usrr
         </button>
-        <button
-          onClick={() => {
-            fetch(
-              "https://flextask-test.onewo.com/ftc/admin/task/setting/page?current=1&size=10",
-              {
-                method: "get",
-              }
-            )
-              .then((res) => res.json())
-              .then((res) => {
-                debugger;
-              });
-          }}
-        >
-          page
-        </button>
+
         <button
           onClick={() => {
             fetch("http://localhost:8080/users?a=1", {
