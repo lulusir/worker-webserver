@@ -8,6 +8,8 @@ const app = new App();
 app.addRoutes(apiRoutes);
 app.addRoutes(customRoutes);
 
+console.log(app);
+
 app.use(async (ctx, next) => {
   await next();
   if (ctx.req.method === "POST") {
@@ -79,6 +81,35 @@ function AppC() {
           }}
         >
           params usrr
+        </button>
+        <button
+          onClick={() => {
+            fetch(
+              "https://flextask-test.onewo.com/ftc/admin/task/setting/page?current=1&size=10",
+              {
+                method: "get",
+              }
+            )
+              .then((res) => res.json())
+              .then((res) => {
+                debugger;
+              });
+          }}
+        >
+          page
+        </button>
+        <button
+          onClick={() => {
+            fetch("http://localhost:8080/users?a=1", {
+              method: "get",
+            })
+              .then((res) => res.json())
+              .then((res) => {
+                debugger;
+              });
+          }}
+        >
+          users
         </button>
         <button
           onClick={() => {

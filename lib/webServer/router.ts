@@ -68,7 +68,10 @@ export class Router {
       if (segment === "") continue;
 
       const isParam = this.isPrams(segment);
-      const isOptionl = isParam && segment.endsWith("?");
+      const isOptionl = segment.endsWith("?");
+      if (isParam) {
+        console.log(segment, "==segment");
+      }
       const key = isParam ? "*" : segment;
       if (!node.children.has(key)) {
         const n = new TrieNode();
@@ -83,6 +86,18 @@ export class Router {
           }
         }
         node.children.set(key, n);
+
+        // sort in add
+        const childrens: [string, TrieNode][] = [];
+
+        for (const n of node.children.entries()) {
+          childrens.push(n);
+          childrens.sort((a, b) => {
+            return b[1].priority - a[1].priority;
+          });
+        }
+
+        node.children = new Map(childrens);
       }
       node = node.children.get(key)!;
     }
@@ -112,12 +127,23 @@ export class Router {
       if (segment === "") continue;
       let found = false;
 
+      // const childrens: [string, TrieNode][] = [];
+
+      // for (const n of node.children.entries()) {
+      //   childrens.push(n);
+      // }
+
+      // console.log(">>>>>>>>>>>>");
+      // console.log(childrens);
+      // console.log("<<<<<<<<<<");
+
       for (const [key, child] of node.children) {
         if (key === segment) {
           node = child;
           found = true;
           break;
         }
+
         if (child.isParam) {
           params[child.paramName] = segment;
           node = child;
@@ -126,11 +152,14 @@ export class Router {
         }
 
         if (key === "*") {
-          if (child.isEnd) {
-            return { handler: child.handler, params };
+          if (!child.isParam) {
+            if (child.isEnd) {
+              return { handler: child.handler, params };
+            }
           }
         }
       }
+
       if (!found) {
         return { handler: null, params: {} };
       }

@@ -19,7 +19,7 @@ export default defineConfig([
     entry: ["lib/index.ts"],
     outDir: "./dist",
     clean: true,
-    minify: true,
+    // minify: true,
     format: ["esm", "cjs"],
     dts: true,
     shims: true,
