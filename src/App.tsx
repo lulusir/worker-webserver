@@ -26,7 +26,7 @@ app.use(async (ctx, next) => {
           body.code = 200;
         }
         ctx.res.body = JSON.stringify(body);
-      } catch {}
+      } catch { }
     }
   }
 });
@@ -48,6 +48,26 @@ function AppC() {
           }}
         >
           stop
+        </button>
+        <button
+          onClick={() => {
+            fetch("http://localhost:8080/hhhhh")
+          }}
+        >
+          normal fetch
+        </button>
+        <button
+          onClick={() => {
+            fetch("http://localhost:8080/err")
+              .catch((err) => {
+                console.log(
+                  err, '==err'
+                );
+              })
+
+          }}
+        >
+          get error
         </button>
         <button
           onClick={() => {

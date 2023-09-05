@@ -14,4 +14,12 @@ export const customRoutes: Route[] = [
       ctx.res.headers.set("content-type", "application/json");
     },
   },
+
+  {
+    path: "/err",
+    method: "get",
+    handler: async (ctx) => {
+      ctx.res.status = 500;
+    },
+  },
 ];

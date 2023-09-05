@@ -7,3 +7,5 @@ export type Ctx = {
   __handle: Route["handler"];
   __routerCtx: RouterContext;
 };
+
+export const NoMatchRouteStatusCode = 10086;

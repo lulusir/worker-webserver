@@ -1,5 +1,6 @@
 import { deserializeResponse } from "../swr/response";
 import { MessageStatus, MessageToSW } from "../type";
+import { NoMatchRouteStatusCode } from "../webServer/context";
 import { PipeMessage } from "./pipeMessage";
 
 export class ResponseBuilder {
@@ -31,11 +32,13 @@ export class ResponseBuilder {
     }
 
     return this.pipeMessage.receive(pid).then((msg: MessageToSW["data"]) => {
-      if (msg.res.status === 200) {
-        const response = deserializeResponse(msg.res);
-        return response;
+      // 处理路由不匹配
+      if (msg.res.status === NoMatchRouteStatusCode) {
+        return fetch(event.request);
       }
-      return fetch(event.request);
+
+      const response = deserializeResponse(msg.res);
+      return response;
     });
   }
 

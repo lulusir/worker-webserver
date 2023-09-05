@@ -1,6 +1,6 @@
 import { serviceWorkerContainer } from "../swr/serviceWorkerContainer";
 import { MessageToMain } from "../type";
-import { Ctx } from "./context";
+import { Ctx, NoMatchRouteStatusCode } from "./context";
 import { IMiddleware, MiddlewareRunner } from "./middleware";
 import { Res } from "./res";
 import { Route, Router } from "./router";
@@ -17,7 +17,8 @@ export class Server {
           await ctx.__handle(ctx.__routerCtx);
         }
       } else {
-        ctx.res.status = 500;
+        // 匹配不到路由，应该走一个特殊的处理
+        ctx.res.status === NoMatchRouteStatusCode;
       }
       await next();
     });
